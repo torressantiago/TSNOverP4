@@ -48,7 +48,38 @@ credit = credit + idleslope
 
 # TAS
 
-```
+``` 
 
+tps CDT ? Qui ?
+tps Garde fixe ? Donné quelque part ? 
+tps Autres ? Qui ?
+
+Il faudrait un temps global 
+
+PRIO 
+GUARD = MAX_LENGHT(trame_Ci)
+cycle = 0
+tic = 1 // 1 us
+
+while true
+    SI TIME = GUARD ALORS
+        interdiction transmission
+    FSI
+
+    SI TIME <= CDT ALORS
+
+    FSI
+
+    SI TIME <= AUTRES ALORS && TIME > CDT
+        ** Verification prio **
+        //cbs(FRAME)
+        //wrr(FRAME)
+        //drr(FRAME)
+    FSI
+    TIME+=tic
+    SI TIME == T_MAX
+        TIME = 0
+    FSI
+end while
 
 ```
