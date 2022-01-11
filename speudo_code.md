@@ -1,4 +1,6 @@
 # CBS
+
+** Voir p4cheatsheets pour register notion de file et le counter **
  
 ```
 * High classe typiquement 75 *
