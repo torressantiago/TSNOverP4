@@ -1,0 +1,54 @@
+{
+  "target": "bmv2",
+  "p4info": "build/EthernetSwitch.p4.p4info.txt",
+  "bmv2_json": "build/EthernetSwitch.json",
+  "table_entries": [
+    {
+      "table": "MyIngress.dmac",
+      "default_action": true,
+      "action_name": "MyIngress.drop",
+      "action_params": { }
+    },
+    {
+      "table": "MyIngress.dmac",
+      "match": {
+        "hdr.ethernet.dstAddr": "08:00:00:00:03:00"
+      },
+      "action_name": "MyIngress.forward",
+      "action_params": {
+        "port": 4
+      }
+    },
+    {
+      "table": "MyIngress.dmac",
+      "match": {
+        "hdr.ethernet.dstAddr": "08:00:00:00:04:00"
+      },
+      "action_name": "MyIngress.forward",
+      "action_params": {
+        "port": 3
+      }
+    },
+    {
+      "table": "MyIngress.dmac",
+      "match": {
+        "hdr.ethernet.dstAddr": "08:00:00:00:03:33"
+      },
+      "action_name": "MyIngress.ipv4_forward",
+      "action_params": {
+        
+        "port": 1
+      }
+    },
+    {
+      "table": "MyIngress.dmac",
+      "match": {
+        "hdr.ethernet.dstAddr": "08:00:00:00:04:44"
+      },
+      "action_name": "MyIngress.ipv4_forward",
+      "action_params": {
+        "port": 2
+      }
+    }
+  ]
+}
