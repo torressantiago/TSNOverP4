@@ -2,6 +2,8 @@
 #include <core.p4>
 #include <v1model.p4>
 
+// #define SET_EGRESS_PORT(value)    standard_metadata.egress_port = (PortId_t)value
+
 const bit<16> TYPE_VLAN = 0x8100;
 
 /*************************************************************************
@@ -50,7 +52,7 @@ parser MyParser(packet_in packet,
         packet.extract(hdr.ethernet);
         transition select(hdr.ethernet.etherType) {
             TYPE_VLAN : parse_vlan;
-            default: accept; // TODO Reject the frame
+            default: accept;
         }
     }
 
@@ -88,25 +90,25 @@ control MyIngress(inout headers hdr,
         standard_metadata.egress_spec = port;
     }
 
-    /* Broadcast implementation
-    TODO implement it in the json file
+    /* 
+    // Broadcast implementation
+    // TODO implement it in the json file
     action broadcast() {
-        modify_field(intrinsic_metadata.mgid, 1);
+        SET_EGRESS_PORT(PortId_const(100)); // Broadcast port
+    }
+
+    // MAC learn
+    action mac_learn() {
+        CALL_DIGEST(mac_learn_digest_t, mac_learn_digest, 1024, ({ hdr.ethernet.srcAddr, GET_INGRESS_PORT() }));
+    }
+
+    action _nop() {
     }
     */
+     
+
 
     //-- TABLES --//
-    /* -- May be implemented later, it corresponds to MAC adress learning
-    table smac {
-        key = {
-            hdr.ethernet.srcAddr : exact;
-        }
-        actions = {
-            mac_learn; // evaluate pertinence
-        }
-        size = 512;
-    }
-    */
     table dmac {
         key = {
             hdr.ethernet.dstAddr : exact;
@@ -117,13 +119,31 @@ control MyIngress(inout headers hdr,
             drop;
             NoAction;
         }
-        size = 1024;
+        size = 512;
         default_action = drop();
     }
+    /*
+    table smac {
+        actions = {
+            mac_learn;
+            _nop;
+            drop;
+        }
+        key = {
+            hdr.ethernet.srcAddr: exact;
+        }
+        default_action = mac_learn();
+        size = 512;
+    }
+    */
     apply {
         // static forwarding
-        if (hdr.ethernet.isValid()) {
+        if (hdr.ethernet.isValid() && hdr.ethernet.etherType == TYPE_VLAN) {
+            //smac.apply();
             dmac.apply();
+        }
+        else{
+            drop();
         }
     }
 }

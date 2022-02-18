@@ -168,7 +168,7 @@
       "id" : 0,
       "source_info" : {
         "filename" : "EthernetSwitch.p4",
-        "line" : 153,
+        "line" : 173,
         "column" : 8,
         "source_fragment" : "MyDeparser"
       },
@@ -203,7 +203,29 @@
           ],
           "source_info" : {
             "filename" : "EthernetSwitch.p4",
-            "line" : 84,
+            "line" : 86,
+            "column" : 8,
+            "source_fragment" : "mark_to_drop(standard_metadata)"
+          }
+        }
+      ]
+    },
+    {
+      "name" : "MyIngress.drop",
+      "id" : 2,
+      "runtime_data" : [],
+      "primitives" : [
+        {
+          "op" : "mark_to_drop",
+          "parameters" : [
+            {
+              "type" : "header",
+              "value" : "standard_metadata"
+            }
+          ],
+          "source_info" : {
+            "filename" : "EthernetSwitch.p4",
+            "line" : 86,
             "column" : 8,
             "source_fragment" : "mark_to_drop(standard_metadata)"
           }
@@ -212,7 +234,7 @@
     },
     {
       "name" : "MyIngress.forward",
-      "id" : 2,
+      "id" : 3,
       "runtime_data" : [
         {
           "name" : "port",
@@ -234,7 +256,7 @@
           ],
           "source_info" : {
             "filename" : "EthernetSwitch.p4",
-            "line" : 88,
+            "line" : 90,
             "column" : 8,
             "source_fragment" : "standard_metadata.egress_spec = port"
           }
@@ -248,7 +270,7 @@
       "id" : 0,
       "source_info" : {
         "filename" : "EthernetSwitch.p4",
-        "line" : 77,
+        "line" : 79,
         "column" : 8,
         "source_fragment" : "MyIngress"
       },
@@ -259,7 +281,7 @@
           "id" : 0,
           "source_info" : {
             "filename" : "EthernetSwitch.p4",
-            "line" : 110,
+            "line" : 112,
             "column" : 10,
             "source_fragment" : "dmac"
           },
@@ -273,11 +295,11 @@
           ],
           "match_type" : "exact",
           "type" : "simple",
-          "max_size" : 1024,
+          "max_size" : 512,
           "with_counters" : false,
           "support_timeout" : false,
           "direct_meters" : null,
-          "action_ids" : [2, 1, 0],
+          "action_ids" : [3, 1, 0],
           "actions" : ["MyIngress.forward", "MyIngress.drop", "NoAction"],
           "base_default_next" : null,
           "next_tables" : {
@@ -291,6 +313,35 @@
             "action_data" : [],
             "action_entry_const" : false
           }
+        },
+        {
+          "name" : "tbl_drop",
+          "id" : 1,
+          "source_info" : {
+            "filename" : "EthernetSwitch.p4",
+            "line" : 146,
+            "column" : 12,
+            "source_fragment" : "drop()"
+          },
+          "key" : [],
+          "match_type" : "exact",
+          "type" : "simple",
+          "max_size" : 1024,
+          "with_counters" : false,
+          "support_timeout" : false,
+          "direct_meters" : null,
+          "action_ids" : [2],
+          "actions" : ["MyIngress.drop"],
+          "base_default_next" : null,
+          "next_tables" : {
+            "MyIngress.drop" : null
+          },
+          "default_entry" : {
+            "action_id" : 2,
+            "action_const" : true,
+            "action_data" : [],
+            "action_entry_const" : true
+          }
         }
       ],
       "action_profiles" : [],
@@ -300,23 +351,43 @@
           "id" : 0,
           "source_info" : {
             "filename" : "EthernetSwitch.p4",
-            "line" : 125,
+            "line" : 141,
             "column" : 12,
-            "source_fragment" : "hdr.ethernet.isValid()"
+            "source_fragment" : "hdr.ethernet.isValid() && hdr.ethernet.etherType == TYPE_VLAN"
           },
           "expression" : {
             "type" : "expression",
             "value" : {
-              "op" : "d2b",
-              "left" : null,
+              "op" : "and",
+              "left" : {
+                "type" : "expression",
+                "value" : {
+                  "op" : "d2b",
+                  "left" : null,
+                  "right" : {
+                    "type" : "field",
+                    "value" : ["ethernet", "$valid$"]
+                  }
+                }
+              },
               "right" : {
-                "type" : "field",
-                "value" : ["ethernet", "$valid$"]
+                "type" : "expression",
+                "value" : {
+                  "op" : "==",
+                  "left" : {
+                    "type" : "field",
+                    "value" : ["ethernet", "etherType"]
+                  },
+                  "right" : {
+                    "type" : "hexstr",
+                    "value" : "0x8100"
+                  }
+                }
               }
             }
           },
-          "false_next" : null,
-          "true_next" : "MyIngress.dmac"
+          "true_next" : "MyIngress.dmac",
+          "false_next" : "tbl_drop"
         }
       ]
     },
@@ -325,7 +396,7 @@
       "id" : 1,
       "source_info" : {
         "filename" : "EthernetSwitch.p4",
-        "line" : 135,
+        "line" : 155,
         "column" : 8,
         "source_fragment" : "MyEgress"
       },

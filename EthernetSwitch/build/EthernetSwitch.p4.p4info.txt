@@ -22,7 +22,7 @@ tables {
   action_refs {
     id: 21257015
   }
-  size: 1024
+  size: 512
 }
 actions {
   preamble {
