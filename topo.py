@@ -50,7 +50,7 @@ def topology():
     
     # Allowing L2/L3 switching
     s1.cmd('sudo ovs-ofctl add-flow s1 actions=output:normal')
-
+    '''
     if QOS == 'TAS':
         # allow iptables to see the arriving packet so that it can modify it with the priority set in the PCP field
         # TODO  Do this with VLAN tag
@@ -67,7 +67,7 @@ def topology():
                 base-time 1554445635681310809 \
                 sched-entry S 01 800000 sched-entry S 02 200000 \
                 clockid CLOCK_TAI')
-
+    '''
     #elif QOS == 'CBS':
     
     #else
