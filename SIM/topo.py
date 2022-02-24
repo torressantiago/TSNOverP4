@@ -60,17 +60,42 @@ def topology():
         s1.cmd('sudo iptables -t mangle -A POSTROUTING -p udp --dport 6666 -j CLASSIFY --set-class 0:1')
 
         # Change queueing policy
-        s1.cmd('tc qdisc replace dev s1-eth4 parent root handle 100 taprio \
-                num_tc 2 \
-                map 1 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 \
-                queues 1@0 1@1 \
-                base-time 1554445635681310809 \
-                sched-entry S 01 800000 sched-entry S 02 200000 \
+        s1.cmd('sudo tc qdisc replace dev eth0 parent root handle 100 taprio \
+                num_tc 3 \
+                map 2 2 1 0 2 2 2 2 2 2 2 2 2 2 2 2 \
+                queues 1@0 1@0 1@0 \
+                base-time 1000000000 \
+                sched-entry S 01 300000 \
+                sched-entry S 03 300000 \
+                sched-entry S 04 400000 \
+                flags 0x1 \
+                txtime-delay 500000 \
                 clockid CLOCK_TAI')
 
     #elif QOS == 'CBS':
-    
-    #else
+        # TODO  Do this with VLAN tag
+        # class 0
+        s1.cmd('sudo iptables -t mangle -A POSTROUTING -p udp --dport 7777 -j CLASSIFY --set-class 0:0')
+        # class 1
+        s1.cmd('sudo iptables -t mangle -A POSTROUTING -p udp --dport 6666 -j CLASSIFY --set-class 0:1')
+
+        # Setting up the priority queue to mount CBS on
+        s1.cmd('sudo tc qdisc add dev eth0 parent root handle 6666 mqprio \
+                num_tc 3 \
+                map 2 2 1 0 2 2 2 2 2 2 2 2 2 2 2 2 \
+                queues 1@0 1@1 2@2 \
+                hw 0')
+
+        # Use intel provided code to compute CBS parameters
+        s1.cmd('sudo tc qdisc replace dev eth0 parent 6666:1 cbs \
+                idleslope 98688 sendslope -901312 hicredit 153 locredit -1389 \
+                offload 1')
+
+        s1.cmd('sudo tc qdisc replace dev eth0 parent 6666:2 cbs \
+                idleslope 3648 sendslope -996352 hicredit 12 locredit -113 \
+                offload 1')
+    else:
+        print("No QoS rule chosen, defaulting to noop")
 
     
     # Test connectivity between hosts
