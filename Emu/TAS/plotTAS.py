@@ -24,7 +24,7 @@ for i in range(len(x)):
 
 y = data[1]
 
-seconds = np.array(seconds)/seconds[1]
+seconds = np.array(seconds)-seconds[1]
 port = y.to_numpy()
 
 normport1 = (port-6666)/1111
@@ -42,6 +42,8 @@ ax1.set_ylabel('Packet Arrival')
 
 ax1.stem(seconds,normport2, 'C0-', label='PRI0',markerfmt='C0o')
 ax1.stem(seconds,normport1, 'C1-', label='PRI1',markerfmt='C1D')
+
+plt.xlim(right=0.2)
 
 leg = ax1.legend()
 
