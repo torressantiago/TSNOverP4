@@ -6,33 +6,33 @@ if [ -z "$test" ]
 then
     # -- Bridge config --
     # bridge interface creation
-    brctl addbr br0
+    sudo brctl addbr br0
 
     # Set devices to promiscuous mode so that switching at L2 can be done
-    ip link set dev enp2s0f0 promisc on
-    ip link set dev enp2s0f1 promisc on
+    sudo ip link set dev enp2s0f0 promisc on
+    sudo ip link set dev enp2s0f1 promisc on
 
     # Add interfaces to bridge
     # NOTE once this is done, these interfaces are not usable for anything else
-    brctl addif br0 enp2s0f0
-    brctl addif br0 enp2s0f1
+    sudo brctl addif br0 enp2s0f0
+    sudo brctl addif br0 enp2s0f1
 
     # Bring up the interface
-    ip link set dev br0 up
+    sudo ip link set dev br0 up
 fi
 
 # -- Switching configuration --
 # Since a bridge works mostly on L2, the packet has to be modified so that tc (that works on higher levels) can schedule correctly
 # Here the class is set according to the port used
 # TODO to achieve real TSN behaviour, instead of ports, the VLAN tag must be used to set priority
-iptables -t mangle -A POSTROUTING -p udp --dport 6666 -j CLASSIFY --set-class 0:1
-iptables -t mangle -A POSTROUTING -p udp --dport 7777 -j CLASSIFY --set-class 0:0
+sudo iptables -t mangle -A POSTROUTING -p udp --dport 6666 -j CLASSIFY --set-class 0:1
+sudo iptables -t mangle -A POSTROUTING -p udp --dport 7777 -j CLASSIFY --set-class 0:0
 
 # Configure the kernel to work according to the rules set by the iptables commands from above
-modprobe br_netfilter
-echo 1 > /proc/sys/net/bridge/bridge-nf-call-iptables
-echo 1 > /proc/sys/net/bridge/bridge-nf-call-ip6tables
-
+sudo modprobe br_netfilter
+sudo echo 1 > /proc/sys/net/bridge/bridge-nf-call-iptables
+sudo echo 1 > /proc/sys/net/bridge/bridge-nf-call-ip6tables
+: '
 if [ $1 == "TAS" ]
 then
     # Set the QoS rules for TAS
@@ -41,7 +41,7 @@ then
     map 1 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 \
     queues 1@0 1@1 \
     base-time 1554445635681310809 \
-    sched-entry S 01 800000 sched-entry S 02 200000 \
+    sched-entry S 01 80000000 sched-entry S 02 20000000 \
     clockid CLOCK_TAI
 
 elif [ $1 == "CBS" ]
@@ -62,3 +62,5 @@ then
         idleslope 3648 sendslope -996352 hicredit 12 locredit -113 \
         offload 1
 fi
+'
+# remember to update iproute2

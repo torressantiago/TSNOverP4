@@ -40,8 +40,8 @@ ax1.set_title("Packet reception timestamps (TAS)")
 ax1.set_xlabel('Time [s]')
 ax1.set_ylabel('Packet Arrival')
 
-ax1.stem(seconds,normport2, 'C0-', label='PRI0',markerfmt='C0o')
-ax1.stem(seconds,normport1, 'C1-', label='PRI1',markerfmt='C1D')
+ax1.stem(seconds,normport1, 'C1-', label='PRI0',markerfmt='C1D')
+ax1.stem(seconds,normport2, 'C0-', label='PRI1',markerfmt='C0o')
 
 plt.xlim(right=0.2)
 
