@@ -46,21 +46,16 @@ then
 
 elif [ $1 == "CBS" ]
 then
-    sudo tc qdisc add dev eth0 parent root handle 200 mqprio \
-        num_tc 3 \
-        map 1 0 2 2 2 2 2 2 2 2 2 2 2 2 2 2 \
-        queues 1@0 1@1 \
-        hw 0
-
-    # Q0
-    sudo tc qdisc replace dev eth0 parent 200:1 cbs \
-        idleslope 98688 sendslope -901312 hicredit 153 locredit -1389 \
-        offload 1
-    
-    # Q1
-    sudo tc qdisc replace dev eth0 parent 200:2 cbs \
-        idleslope 3648 sendslope -996352 hicredit 12 locredit -113 \
-        offload 1
+    # priority queue
+    tc qdisc add dev enp2s0f1 handle 100: parent root mqprio num_tc 3 \
+            map 2 2 1 0 2 2 2 2 2 2 2 2 2 2 2 2 \
+            queues 1@0 1@1 2@2 \
+            hw 0
+    tc qdisc replace dev enp2s0f1 parent 100:4 cbs \
+            locredit -8960000 hicredit 103040000 sendslope -80000 idleslope 920000
+    # These values are obtained from the following parameters,
+    # idleslope is 20mbit/s, the transmission rate is 1Gbit/s and the
+    # maximum interfering frame size is 1500 bytes.
 fi
 '
 # remember to update iproute2
