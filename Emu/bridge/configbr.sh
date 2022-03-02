@@ -52,9 +52,9 @@ then
             queues 1@0 1@1 2@2 \
             hw 0
     tc qdisc replace dev enp2s0f1 parent 100:4 cbs \
-            locredit -8960000 hicredit 103040000 sendslope -80000 idleslope 920000
+            locredit -8960000 hicredit 1380 sendslope -80000 idleslope 920000
     # These values are obtained from the following parameters,
-    # idleslope is 20mbit/s, the transmission rate is 1Gbit/s and the
+    # idleslope is 920Mbit/s, the transmission rate is 1Gbit/s and the
     # maximum interfering frame size is 1500 bytes.
 fi
 '
