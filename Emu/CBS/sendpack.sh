@@ -14,7 +14,7 @@ i=0
 
 echo "Sending to: $HOST"
 
-while [[ $i -le 1000 ]]
+while [[ $i -le 10 ]]
 do
     # echo $i
     # echo $(($i % 2))
