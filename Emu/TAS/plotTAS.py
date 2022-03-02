@@ -66,7 +66,7 @@ for i in range(len(x)):
 
 y = data[0]
 
-seconds = np.array(seconds)-seconds[1]
+seconds = np.array(seconds)-seconds[0]
 port = y.to_numpy()
 
 normport1 = (port-6666)/1111
