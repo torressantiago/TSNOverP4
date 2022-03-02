@@ -56,6 +56,16 @@ then
     # These values are obtained from the following parameters,
     # idleslope is 920Mbit/s, the transmission rate is 1Gbit/s and the
     # maximum interfering frame size is 1500 bytes.
+else
+    # defaulting to TAS
+    # Set the QoS rules for TAS
+    tc qdisc replace dev enp2s0f1 parent root handle 100 taprio \
+    num_tc 2 \
+    map 1 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 \
+    queues 1@0 1@1 \
+    base-time 1554445635681310809 \
+    sched-entry S 01 80000000 sched-entry S 02 20000000 \
+    clockid CLOCK_TAI
 fi
 '
 # remember to update iproute2

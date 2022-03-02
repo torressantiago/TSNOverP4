@@ -11,7 +11,7 @@ plt.rcParams['mathtext.bf'] = 'Bitstream Vera Sans:bold'
 
 
 # Interpreting received data
-data = pd.read_csv('../parsedpacketdata',sep='\s+',header=None)
+data = pd.read_csv('parsedpacketdata',sep='\s+',header=None)
 data = pd.DataFrame(data)
 
 x = data[0]
@@ -51,7 +51,7 @@ leg = ax1.legend()
 # plt.show()
 
 # Interpreting sent data
-data = pd.read_csv('../parsedsenderoutput',sep='\s+',header=None)
+data = pd.read_csv('parsedsenderoutput',sep='\s+',header=None)
 data = pd.DataFrame(data)
 
 x = data[1]
