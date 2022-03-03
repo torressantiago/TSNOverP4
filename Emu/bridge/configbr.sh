@@ -46,15 +46,17 @@ then
 
 elif [ $1 == "CBS" ]
 then
+    # Limit max speed of output port
+    sudo ethtool -s enp2s0f1 10 autoneg off
     # priority queue
     tc qdisc add dev enp2s0f1 handle 100: parent root mqprio num_tc 3 \
             map 2 2 1 0 2 2 2 2 2 2 2 2 2 2 2 2 \
             queues 1@0 1@1 2@2 \
             hw 0
     tc qdisc replace dev enp2s0f1 parent 100:4 cbs \
-            locredit -8960000 hicredit 1380 sendslope -80000 idleslope 920000
+            locredit -62500 hicredit 750000 sendslope -50000000 idleslope 50000000
     # These values are obtained from the following parameters,
-    # idleslope is 920Mbit/s, the transmission rate is 1Gbit/s and the
+    # idleslope is 50Mbit/s, the transmission rate is 100Mbit/s and the
     # maximum interfering frame size is 1500 bytes.
 else
     # defaulting to TAS

@@ -4,6 +4,8 @@ import pandas as pd
 import numpy as np
 import json
 
+plt.rc('font',family='Times New Roman')
+
 # -- Sent data --
 data = json.load(open('sendoutput.json'))
 df = pd.DataFrame(data["intervals"])
@@ -48,10 +50,11 @@ for i in range(len(t)):
 	y[i] = t[i]*bitr[i]+ylast
 	ylast = y[i]
 
-
-plt.plot(t,y,'o--',label='Received throughput')
-plt.plot(trec,y_rec,'o--',label='Sent throughput')
-plt.legend()
+fig, ax = plt.subplots()
+ax.plot(t,y,'o--',label='Received throughput, concurrent frames=10')
+ax.plot(trec,y_rec,'o--',label='Sent throughput')
+ax.legend()
+ax.set_ylim([0, np.amax(y)])
 plt.ylabel('Data received [bits]',fontname="CMU Serif")
 plt.xlabel('Time [seconds]',fontname="CMU Serif")
 plt.title('Measured throughput (CBS)',fontname="CMU Serif")
