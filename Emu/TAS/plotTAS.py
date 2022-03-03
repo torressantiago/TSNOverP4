@@ -4,11 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from datetime import *
 
-plt.rcParams['mathtext.fontset'] = 'custom'
-plt.rcParams['mathtext.rm'] = 'Bitstream Vera Sans'
-plt.rcParams['mathtext.it'] = 'Bitstream Vera Sans:italic'
-plt.rcParams['mathtext.bf'] = 'Bitstream Vera Sans:bold'
-
+plt.rc('font',family='Times New Roman')
 
 # Interpreting received data
 data = pd.read_csv('parsedpacketdata',sep='\s+',header=None)
@@ -37,9 +33,9 @@ print(port)
 
 fig, (ax1,ax2) = plt.subplots(2)
 
-ax1.set_title("Packet reception timestamps (TAS)")    
-ax1.set_xlabel('Time [s]')
-ax1.set_ylabel('Packet Arrival')
+ax1.set_title("Packet reception timestamps (TAS)",fontname="CMU Serif")    
+ax1.set_xlabel('Time [s]',fontname="CMU Serif")
+ax1.set_ylabel('Packet Arrival',fontname="CMU Serif")
 
 ax1.stem(seconds,normport1, 'C1-', label='PRI0',markerfmt='C1D')
 ax1.stem(seconds,normport2, 'C0-', label='PRI1',markerfmt='C0o')
@@ -66,7 +62,7 @@ for i in range(len(x)):
 
 y = data[0]
 
-seconds = np.array(seconds)-seconds[0]
+seconds = np.array(seconds)-seconds[1]
 port = y.to_numpy()
 
 normport1 = (port-6666)/1111
@@ -75,9 +71,9 @@ normport2 = -(port-7777)/1111
 print(seconds)
 print(port)
 
-ax2.set_title("Packet emition timestamps (for TAS)")    
-ax2.set_xlabel('Time [s]')
-ax2.set_ylabel('Packet emition')
+ax2.set_title("Packet emition timestamps (for TAS)",fontname="CMU Serif")    
+ax2.set_xlabel('Time [s]',fontname="CMU Serif")
+ax2.set_ylabel('Packet emition',fontname="CMU Serif")
 
 ax2.stem(seconds,normport1, 'C1-', label='PRI0',markerfmt='C1D')
 ax2.stem(seconds,normport2, 'C0-', label='PRI1',markerfmt='C0o')
