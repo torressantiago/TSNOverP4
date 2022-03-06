@@ -10,5 +10,5 @@ According to P4's documentation, the traffic manager is something static and spe
 
 In the Wiki pages below, you'll find application notes on how to create test beds for TSN by creating a software switch in P4 and then on how to deploy switching techniques on a Linux-run software switch.
 
-* [P4 application note](p4appnote.com) 
+* [P4 application note](https://github.com/torressantiago/TSNOverP4/wiki/P4-TSN-oriented-switch-design-application-note) 
 * [tc application note](https://github.com/torressantiago/TSNOverP4/wiki/TC-for-TSN-application-note)
