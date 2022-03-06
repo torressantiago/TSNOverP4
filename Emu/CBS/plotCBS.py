@@ -4,7 +4,7 @@ import pandas as pd
 import numpy as np
 import json
 
-plt.rc('font',family='Times New Roman')
+plt.rc('font',family='CMU Serif')
 
 # -- Sent data --
 data = json.load(open('sendoutput_10concurrent.json'))

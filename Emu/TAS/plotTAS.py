@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from datetime import *
 
-plt.rc('font',family='Times New Roman')
+plt.rc('font',family='CMU Serif')
 
 # Interpreting received data
 data = pd.read_csv('parsedpacketdata',sep='\s+',header=None)
@@ -41,6 +41,7 @@ ax1.stem(seconds,normport1, 'C1-', label='PRI0',markerfmt='C1D')
 ax1.stem(seconds,normport2, 'C0-', label='PRI1',markerfmt='C0o')
 
 ax1.set_xlim([0, 0.2])
+ax1.grid(True)
 
 leg = ax1.legend()
 
@@ -79,7 +80,7 @@ ax2.stem(seconds,normport1, 'C1-', label='PRI0',markerfmt='C1D')
 ax2.stem(seconds,normport2, 'C0-', label='PRI1',markerfmt='C0o')
 
 ax2.set_xlim([0, 0.2])
-
+ax2.grid(True)
 leg = ax2.legend()
 
 plt.show()
